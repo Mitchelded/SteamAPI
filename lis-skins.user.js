@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LIS Skins Helper
 // @namespace    http://tampermonkey.net/
-// @version      0.5
+// @version      0.6
 // @description  Помощник для сайта lis-skins.com
 // @author       Mitchelde
 // @match        https://lis-skins.com/ru/market/*/*
@@ -230,10 +230,49 @@
             });
         });
     }
-
+// Функция для получения предметов с сайта lis-skins.com
+function getLisSkinsItems() {
+    const items = [];
+    const marketItems = document.querySelectorAll('.skins-market-skins-list .item');
+    
+    marketItems.forEach(item => {
+        try {
+            const nameElement = item.querySelector('.name-inner');
+            const priceElement = item.querySelector('.price');
+            const steamPriceElement = item.querySelector('.steam-price-discount');
+            const similarCountElement = item.querySelector('.similar-count');
+            
+            if (nameElement && priceElement) {
+                const name = nameElement.textContent.trim();
+                const price = parseFloat(priceElement.textContent.replace(/[^\d.,]/g, '').replace(',', '.'));
+                const steamPrice = steamPriceElement ? parseFloat(steamPriceElement.getAttribute('title').match(/\d+\.?\d*/)[0]) : null;
+                const discount = steamPriceElement ? parseInt(steamPriceElement.getAttribute('data-diff-value')) : null;
+                const similarCount = similarCountElement ? parseInt(similarCountElement.textContent.match(/\d+/)[0]) : 0;
+                
+                items.push({
+                    name: name,
+                    price: price,
+                    steamPrice: steamPrice,
+                    discount: discount,
+                    similarCount: similarCount,
+                    url: item.getAttribute('data-link')
+                });
+            }
+        } catch (error) {
+            console.error('Ошибка при обработке предмета:', error);
+        }
+    });
+    
+    console.log('Найденные предметы:', items);
+    return items;
+}
     // Запускаем функцию после загрузки страницы
     window.addEventListener('load', async function() {
         console.log('LIS Skins Helper загружен');
+
+        // Получаем предметы с сайта
+        const lisItems = getLisSkinsItems();
+
         const gameName = getGameFromUrl();
         if (gameName) {
             try {
