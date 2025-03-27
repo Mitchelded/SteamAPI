@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LIS Skins Helper
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Помощник для сайта lis-skins.com
 // @author       Mitchelde
 // @match        https://lis-skins.com/ru/market/*/*
