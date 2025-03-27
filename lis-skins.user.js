@@ -19,9 +19,22 @@
         return skinNames;
     }
 
+    // Функция для извлечения названия игры из URL
+    function getGameFromUrl() {
+        const url = window.location.href;
+        const match = url.match(/\/market\/([^\/]+)/);
+        if (match) {
+            const gameName = match[1];
+            console.log('Название игры из URL:', gameName);
+            return gameName;
+        }
+        return null;
+    }
+
     // Запускаем функцию после загрузки страницы
     window.addEventListener('load', function() {
         console.log('LIS Skins Helper загружен');
         getSkinNames();
+        getGameFromUrl();
     });
 })(); 
